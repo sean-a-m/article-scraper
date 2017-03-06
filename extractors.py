@@ -68,7 +68,8 @@ def default_text_joiner(page_elements):
 
 
 def get_dom(link):
-    response = requests.get(link)
+    headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0'}
+    response = requests.get(link, headers=headers)
     if response.status_code == 200:
         return html.fromstring(response.content)
     else:
@@ -103,15 +104,16 @@ def pf(id_feed, dom):
     }.get(id_feed, None)
 
 def dparser(link, id_feed):
-    dom = get_dom(link)
-    extract = pf(id_feed, dom)
-    if extract:
-        return default_text_joiner(extract)
-    else:
+    try:
+        dom = get_dom(link)
+        extract = pf(id_feed, dom)
+        if extract:
+            return default_text_joiner(extract)
+        else:
+            return None
+    except:
+        #TODO: log errors
         return None
-
-
-
 
 
 
