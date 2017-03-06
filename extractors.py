@@ -70,7 +70,6 @@ def default_text_joiner(page_elements):
 def get_dom(link):
     response = requests.get(link)
     if response.status_code == 200:
-        #return BeautifulSoup(response.content, 'html.parser')
         return html.fromstring(response.content)
     else:
         return None
