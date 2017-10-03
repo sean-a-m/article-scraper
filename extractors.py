@@ -1,7 +1,5 @@
 from lxml import html
-from lxml import etree
 import requests
-import string
 
 def nyt(dom):
     return dom.xpath('//p[@class="story-body-text story-content"]')

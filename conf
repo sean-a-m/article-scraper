@@ -1,0 +1,6 @@
+[database]
+host = localhost
+dbname=name
+user=user
+password=password
+port=5432
