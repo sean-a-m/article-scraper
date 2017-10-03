@@ -2,7 +2,6 @@ from lxml import html
 from lxml import etree
 import requests
 import string
-from bs4 import BeautifulSoup
 
 def nyt(dom):
     return dom.xpath('//p[@class="story-body-text story-content"]')
@@ -35,7 +34,8 @@ def npr(dom):
     return dom.xpath("//div[@id='storytext']/p")
 
 def reuters(dom):
-    dom = dom.xpath("//span[@id='article-text']//p")
+    dom = dom.xpath("//div[contains(@class,'ArticleBody_body')]//p")
+    #removes attribution at the end
     return dom[:-1]
 
 def spiegel(dom):
@@ -58,7 +58,10 @@ def atlantic(dom):
     return dom.xpath("//div[@itemprop='articleBody']/section/p")
 
 def bbc(dom):
-    return dom.xpath("//div[@class='story-body']/div/p[not(@class)]")
+    return dom.xpath("//div[@class='story-body']/div/p[not(@class)] | p[@class='story-body__introduction']")
+
+def pbs(dom):
+    return dom.xpath("//div[@itemprop='articleBody']/p")
 
 #This assumes the page elements being passed are paragraph elements or something that works the same way
 def default_text_joiner(page_elements):
@@ -68,10 +71,10 @@ def default_text_joiner(page_elements):
 
 
 def get_dom(link):
-    headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0'}
+    headers = {'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'}
     response = requests.get(link, headers=headers)
     if response.status_code == 200:
-        return html.fromstring(response.content)
+        return html.fromstring(response.content.decode(response.encoding))
     else:
         return None
 
@@ -99,8 +102,8 @@ def pf(id_feed, dom):
         97: wapo(dom),
         98: wapo(dom),
         15: latimes(dom),
-        79: atlantic(dom)
-
+        79: atlantic(dom),
+        112: pbs(dom)
     }.get(id_feed, None)
 
 def dparser(link, id_feed):

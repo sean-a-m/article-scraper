@@ -20,7 +20,7 @@ def run_crawl():
     cursorpg = connpg.cursor()
 
     #Retrieve selection of uncrawled entries uncrawled entries
-    cursorpg.execute("""SELECT id, link, id_feed FROM entry WHERE entry.accessed = FALSE AND id_feed IN (3, 4, 7, 9, 13, 14, 15, 16, 17, 18, 79, 97, 98, 99, 100, 104, 105, 106, 111) ORDER BY DATE DESC LIMIT 50""")
+    cursorpg.execute("""SELECT id, link, id_feed FROM entry WHERE entry.accessed = FALSE AND id_feed IN (3, 4, 7, 9, 13, 14, 15, 16, 17, 18, 79, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 111, 112) ORDER BY DATE DESC LIMIT 50""")
     db_entries = cursorpg.fetchall()
     crawl_items = []
 
@@ -28,6 +28,7 @@ def run_crawl():
         crawl_items.append(crawl_item(db_entry))
 
     random.shuffle(crawl_items)
+    print("Reading " + str(len(crawl_items)) + "items")
 
     for item in crawl_items:
         crawl_text = extractors.dparser(item.link, item.id_feed) #might be none
@@ -45,7 +46,7 @@ def run_crawl():
 def main():
     while True:
         run_crawl()
-        time.sleep(15)
+        time.sleep(60)
 
 if __name__ == '__main__':
     main()
